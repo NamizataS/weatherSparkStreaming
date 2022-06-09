@@ -23,10 +23,17 @@ if __name__ == "__main__":
     print(es_client.ping())
     print(es_client.indices.get(index="cities_index"))
     query = {
-        "term": {
-            "city": {
-                "value": "paris"
+        "aggs": {
+            "cities": {
+                "terms": {
+                    "field": "city",
+                    "size": 10000
+                }
             }
-        }
+        },
+        "size": 0
     }
-    print(es_client.search(index="cities_index", query=query))
+    #res = es_client.search(index="cities_index", query=query)
+    #print(res)
+    #print(es_client.count(index="cities_index", query=query))
+    print(es_client.search(index="cities_index", body=query))

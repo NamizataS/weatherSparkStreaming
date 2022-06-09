@@ -19,13 +19,13 @@ if __name__ == "__main__":
     mapping = {
         "properties": {
             "city": {
-                "type": "text"
+                "type": "keyword"
             },
             "location": {
                 "type": "geo_point"
             },
             "country": {
-                "type": "keyword"
+                "type": "text"
             }
         }
     }
