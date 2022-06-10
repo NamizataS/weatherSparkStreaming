@@ -25,20 +25,18 @@ if __name__ == "__main__":
     print(es_client.ping())
     print(es_client.indices.get(index="cities_index"))
     query = {
-        "aggs": {
-            "cities": {
-                "terms": {
-                    "field": "city",
-                    "size": 10000
-                }
+        "cities": {
+            "terms": {
+                "field": "city",
+                "size": 46000
             }
-        },
-        "size": 0
+        }
     }
+
     # res = es_client.search(index="cities_index", query=query)
     # print(res)
     # print(es_client.count(index="cities_index", query=query))
-    res = es_client.search(index="cities_index", body=query)
+    res = es_client.search(index="cities_index", aggs=query, size=0)
     list_dict_res = res["aggregations"]["cities"]["buckets"]
     list_cities = [d['key'] for d in list_dict_res if 'key' in d]
     headers = {"Content-Type": "application/json"}

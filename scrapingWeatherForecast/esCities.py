@@ -29,7 +29,8 @@ if __name__ == "__main__":
             }
         }
     }
-    es_client.indices.create(index="cities_index", mappings=mapping)
+    settings = {"max_result_window": 1000000}
+    es_client.indices.create(index="cities_index", mappings=mapping, settings=settings)
     df_cities = pd.read_csv("worldcities.csv")
     df_cities['location'] = df_cities.lat.astype(str).str.cat(df_cities.lng.astype(str), sep=',')
     df_cities_es = df_cities[['city_ascii', 'location', 'country']]
