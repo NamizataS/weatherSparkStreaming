@@ -1,3 +1,5 @@
+import json
+
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -33,7 +35,14 @@ if __name__ == "__main__":
         },
         "size": 0
     }
-    #res = es_client.search(index="cities_index", query=query)
-    #print(res)
-    #print(es_client.count(index="cities_index", query=query))
-    print(es_client.search(index="cities_index", body=query))
+    # res = es_client.search(index="cities_index", query=query)
+    # print(res)
+    # print(es_client.count(index="cities_index", query=query))
+    res = es_client.search(index="cities_index", body=query)
+    list_dict_res = res["aggregations"]["cities"]["buckets"]
+    list_cities = [d['key'] for d in list_dict_res if 'key' in d]
+    headers = {"Content-Type": "application/json"}
+    city = json.dumps({"city": list_cities[0]})
+    req = f"http://127.0.0.1:8081/scrape_weather"
+    res_req = requests.post(req, data=city, headers=headers)
+    print(res_req.text)

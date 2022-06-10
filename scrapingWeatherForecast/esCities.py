@@ -32,6 +32,7 @@ if __name__ == "__main__":
     es_client.indices.create(index="cities_index", mappings=mapping)
     df_cities = pd.read_csv("worldcities.csv")
     df_cities['location'] = df_cities.lat.astype(str).str.cat(df_cities.lng.astype(str), sep=',')
-    df_cities_es = df_cities[['city', 'location', 'country']]
+    df_cities_es = df_cities[['city_ascii', 'location', 'country']]
+    df_cities_es = df_cities_es.rename(columns={"city_ascii": "city"})
     documents = df_cities_es.to_dict(orient="records")
     bulk(es_client, generate_data(documents))
