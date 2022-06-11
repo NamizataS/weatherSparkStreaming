@@ -1,33 +1,8 @@
-[error] sbt.librarymanagement.ResolveException: Error downloading org.apache.spark:spark-core_2.13:3.1.2
-[error]   Not found
-[error]   Not found
-[error]   not found: /Users/namizatasangare/.ivy2/localorg.apache.spark/spark-core_2.13/3.1.2/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/org/apache/spark/spark-core_2.13/3.1.2/spark-core_2.13-3.1.2.pom
-[error] Error downloading org.apache.spark:spark-sql_2.13:3.1.2
-[error]   Not found
-[error]   Not found
-[error]   not found: /Users/namizatasangare/.ivy2/localorg.apache.spark/spark-sql_2.13/3.1.2/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/org/apache/spark/spark-sql_2.13/3.1.2/spark-sql_2.13-3.1.2.pom
-[error] Error downloading org.apache.spark:spark-streaming_2.13:3.1.2
-[error]   Not found
-[error]   Not found
-[error]   not found: /Users/namizatasangare/.ivy2/localorg.apache.spark/spark-streaming_2.13/3.1.2/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/org/apache/spark/spark-streaming_2.13/3.1.2/spark-streaming_2.13-3.1.2.pom
-[error] 	at lmcoursier.CoursierDependencyResolution.unresolvedWarningOrThrow(CoursierDependencyResolution.scala:345)
-[error] 	at lmcoursier.CoursierDependencyResolution.$anonfun$update$38(CoursierDependencyResolution.scala:314)
-[error] 	at scala.util.Either$LeftProjection.map(Either.scala:573)
-[error] 	at lmcoursier.CoursierDependencyResolution.update(CoursierDependencyResolution.scala:314)
-[error] 	at sbt.librarymanagement.DependencyResolution.update(DependencyResolution.scala:60)
-[error] 	at sbt.internal.LibraryManagement$.resolve$1(LibraryManagement.scala:59)
-[error] 	at sbt.internal.LibraryManagement$.$anonfun$cachedUpdate$12(LibraryManagement.scala:133)
-[error] 	at sbt.util.Tracked$.$anonfun$lastOutput$1(Tracked.scala:73)
-[error] 	at sbt.internal.LibraryManagement$.$anonfun$cachedUpdate$20(LibraryManagement.scala:146)
-[error] 	at scala.util.control.Exception$Catch.apply(Exception.scala:228)
-[error] 	at sbt.internal.LibraryManagement$.$anonfun$cachedUpdate$11(LibraryManagement.scala:146)
-[error] 	at sbt.internal.LibraryManagement$.$anonfun$cachedUpdate$11$adapted(LibraryManagement.scala:127)
-[error] 	at sbt.util.Tracked$.$anonfun$inputChangedW$1(Tracked.scala:219)
-[error] 	at sbt.internal.LibraryManagement$.cachedUpdate(LibraryManagement.scala:160)
-[error] 	at sbt.Classpaths$.$anonfun$updateTask0$1(Defaults.scala:3690)
+[error] java.lang.RuntimeException: Conflicting cross-version suffixes in: org.apache.spark:spark-tags
+[error] 	at scala.sys.package$.error(package.scala:30)
+[error] 	at sbt.librarymanagement.ConflictWarning$.processCrossVersioned(ConflictWarning.scala:39)
+[error] 	at sbt.librarymanagement.ConflictWarning$.apply(ConflictWarning.scala:19)
+[error] 	at sbt.Classpaths$.$anonfun$ivyBaseSettings$71(Defaults.scala:3206)
 [error] 	at scala.Function1.$anonfun$compose$1(Function1.scala:49)
 [error] 	at sbt.internal.util.$tilde$greater.$anonfun$$u2219$1(TypeFunctions.scala:62)
 [error] 	at sbt.std.Transform$$anon$4.work(Transform.scala:68)
@@ -43,18 +18,4 @@
 [error] 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
 [error] 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
 [error] 	at java.lang.Thread.run(Thread.java:750)
-[error] (ssExtractDependencies) sbt.librarymanagement.ResolveException: Error downloading org.apache.spark:spark-core_2.13:3.1.2
-[error]   Not found
-[error]   Not found
-[error]   not found: /Users/namizatasangare/.ivy2/localorg.apache.spark/spark-core_2.13/3.1.2/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/org/apache/spark/spark-core_2.13/3.1.2/spark-core_2.13-3.1.2.pom
-[error] Error downloading org.apache.spark:spark-sql_2.13:3.1.2
-[error]   Not found
-[error]   Not found
-[error]   not found: /Users/namizatasangare/.ivy2/localorg.apache.spark/spark-sql_2.13/3.1.2/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/org/apache/spark/spark-sql_2.13/3.1.2/spark-sql_2.13-3.1.2.pom
-[error] Error downloading org.apache.spark:spark-streaming_2.13:3.1.2
-[error]   Not found
-[error]   Not found
-[error]   not found: /Users/namizatasangare/.ivy2/localorg.apache.spark/spark-streaming_2.13/3.1.2/ivys/ivy.xml
-[error]   not found: https://repo1.maven.org/maven2/org/apache/spark/spark-streaming_2.13/3.1.2/spark-streaming_2.13-3.1.2.pom
+[error] (ssExtractDependencies) Conflicting cross-version suffixes in: org.apache.spark:spark-tags
