@@ -21,8 +21,8 @@ class scrapeWeather(Resource):
             "html.parser")
         time_sky_desc = soup.find('div', attrs={'class': 'BNeawe tAd8D AP7Wnd'}).text
         temp = soup.find('div', attrs={'class': 'BNeawe iBp4i AP7Wnd'}).text
-        res_dict = {'temperature': temp, 'time_sky': time_sky_desc}
-        return {'data': res_dict}, 200
+        res_dict = {'city': args['city'], 'temperature': temp, 'time_sky': time_sky_desc}
+        return res_dict, 200
 
 
 api.add_resource(scrapeWeather, '/scrape_weather')

@@ -1,4 +1,6 @@
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions.{col, from_json}
+import org.apache.spark.sql.types.{StringType, StructType}
 
 class KafkaInteraction(){
   val bootstrapServers: String = "localhost:29092"
@@ -9,11 +11,19 @@ class KafkaInteraction(){
     val df = spark.readStream
       .format("kafka")
       .option("kafka.bootstrap.servers", bootstrapServers)
-      .option("subscribe", "raw_datas")
+      .option("subscribe", topic)
       .option("startingOffsets", "earliest")
       .load()
+    df.printSchema()
     val testStringDF = df.selectExpr("CAST(value AS STRING)")
-    testStringDF.head()
+    val schema = new StructType()
+      .add("city", StringType)
+      .add("temperature", StringType)
+      .add("time_sky", StringType)
+
+    val testDF = testStringDF.select(from_json(col("value"), schema).as("data"))
+      .select("data.*")
+    testDF.writeStream.format("console").outputMode("append").start().awaitTermination()
   }
 }
 

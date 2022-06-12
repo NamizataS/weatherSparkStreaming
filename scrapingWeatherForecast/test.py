@@ -43,4 +43,5 @@ if __name__ == "__main__":
     city = json.dumps({"city": list_cities[0]})
     req = f"http://127.0.0.1:8081/scrape_weather"
     res_req = requests.post(req, data=city, headers=headers)
-    print(res_req.text)
+    print(res_req.json())
+    print(json.dumps(res_req.json()).encode("utf-8"))

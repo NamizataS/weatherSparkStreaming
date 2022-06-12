@@ -44,8 +44,9 @@ services:
     expose:
       - 9200
       - 9300
+  
   weatherapi:
-    image: weatherapi_image:0.3
+    image: weatherapi_image:0.5
     container_name: weatherapi
     ports:
       - 8081:5000
