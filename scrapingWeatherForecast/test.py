@@ -1,4 +1,5 @@
 import json
+import sys
 
 import requests
 from bs4 import BeautifulSoup
@@ -27,21 +28,38 @@ if __name__ == "__main__":
     query = {
         "cities": {
             "terms": {
-                "field": "city",
+                "field": "city.keyword",
                 "size": 46000
             }
         }
     }
 
+    query2 = {
+        "cities_details": {
+            "multi_terms": {
+                "terms": [
+                    {"field": "city.keyword"},
+                    {"field": "country.keyword"}
+                ], "size": 46000
+            }
+        }
+    }
     # res = es_client.search(index="cities_index", query=query)
     # print(res)
     # print(es_client.count(index="cities_index", query=query))
-    res = es_client.search(index="cities_index", aggs=query, size=0)
-    list_dict_res = res["aggregations"]["cities"]["buckets"]
-    list_cities = [d['key'] for d in list_dict_res if 'key' in d]
+
+    # print(res_req.json())
+    # print(json.dumps(res_req.json()).encode("utf-8"))
+    # print(sys.getsizeof(json.dumps(res_req.json()).encode("utf-8")))
+    res2 = es_client.search(index="cities_index", aggs=query2)
+    list_dict_res2 = res2["aggregations"]["cities_details"]["buckets"]
+    list_cities_with_details = [d['key'] for d in list_dict_res2 if 'key' in d]
+    print(list_cities_with_details[0])
     headers = {"Content-Type": "application/json"}
-    city = json.dumps({"city": list_cities[0]})
+    city = json.dumps({"city": list_cities_with_details[0][0], "country": list_cities_with_details[0][1],
+                       "timezone": list_cities_with_details[0][2]})
     req = f"http://127.0.0.1:8081/scrape_weather"
     res_req = requests.post(req, data=city, headers=headers)
     print(res_req.json())
-    print(json.dumps(res_req.json()).encode("utf-8"))
+
+

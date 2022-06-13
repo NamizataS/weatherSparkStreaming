@@ -15,15 +15,17 @@ class KafkaInteraction(){
       .option("startingOffsets", "earliest")
       .load()
     df.printSchema()
-    val testStringDF = df.selectExpr("CAST(value AS STRING)")
+    val testStringDF = df.selectExpr("CAST(value AS STRING)", "timestamp")
     val schema = new StructType()
       .add("city", StringType)
+      .add("country", StringType)
       .add("temperature", StringType)
       .add("time_sky", StringType)
 
-    val testDF = testStringDF.select(from_json(col("value"), schema).as("data"))
-      .select("data.*")
+    val testDF = testStringDF.select(from_json(col("value"), schema).as("data"), col("timestamp"))
+      .select("data.*", "timestamp")
     testDF.writeStream.format("console").outputMode("append").start().awaitTermination()
+
   }
 }
 

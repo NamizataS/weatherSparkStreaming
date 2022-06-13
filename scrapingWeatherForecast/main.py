@@ -4,21 +4,30 @@ from kafkaResources.KafkaResources import KafkaInteraction
 import json
 import requests
 
-
 if __name__ == "__main__":
     es = ElasticSearchResources()
-    '''
+
     es.delete_index("cities_index")
     mapping = {
         "properties": {
             "city": {
-                "type": "keyword"
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
             },
             "location": {
                 "type": "geo_point"
             },
             "country": {
-                "type": "text"
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword"
+                    }
+                }
             }
         }
     }
@@ -32,24 +41,28 @@ if __name__ == "__main__":
     es.load_data_in_index(documents, "cities_index")
     '''
     query = {
-        "cities": {
-            "terms": {
-                "field": "city",
-                "size": 46000
+        "cities_details": {
+            "multi_terms": {
+                "terms": [
+                    {"field": "city.keyword"},
+                    {"field": "country.keyword"}
+                ], "size": 46000
             }
         }
     }
 
-    res = es.query_index(query, "aggs", "cities_index")["cities"]["buckets"]
+    res = es.query_index(query, "aggs", "cities_index")["cities_details"]["buckets"]
     list_cities = [d['key'] for d in res if 'key' in d]
     kafkaInteractions = KafkaInteraction()
-    #kafkaInteractions.create_topic("raw_datas")
+    kafkaInteractions.create_topic("raw_datas")
     headers = {"Content-Type": "application/json"}
-    for i in range(3, 6):
-        city = json.dumps({"city": list_cities[i]})
+    res_tab = []
+    for i in range(22, 40):
+        city = json.dumps({"city": list_cities[i][0], "country": list_cities[i][1]})
         req = f"http://127.0.0.1:8081/scrape_weather"
         res_req = requests.post(req, data=city, headers=headers)
         message = json.dumps(res_req.json()).encode("utf-8")
-        kafkaInteractions.send_message(message, "raw_datas")
+        res_tab.append(message)
+    kafkaInteractions.send_message(res_tab, "raw_datas")
     kafkaInteractions.close_producer_connection()
-
+    '''

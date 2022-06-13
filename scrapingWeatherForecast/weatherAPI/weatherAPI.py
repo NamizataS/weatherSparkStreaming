@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Resource, Api, reqparse
 import requests
 from bs4 import BeautifulSoup
-from elasticsearch import Elasticsearch
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -15,13 +15,14 @@ class scrapeWeather(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('city', required=True)
+        parser.add_argument('country', required=True)
         args = parser.parse_args()
         soup = BeautifulSoup(
-            requests.get(f"https://www.google.com/search?q=weather+{args['city']}", cookies=self.cookies).content,
+            requests.get(f"https://www.google.com/search?q=weather+{args['city']}+{args['country']}", cookies=self.cookies).content,
             "html.parser")
         time_sky_desc = soup.find('div', attrs={'class': 'BNeawe tAd8D AP7Wnd'}).text
         temp = soup.find('div', attrs={'class': 'BNeawe iBp4i AP7Wnd'}).text
-        res_dict = {'city': args['city'], 'temperature': temp, 'time_sky': time_sky_desc}
+        res_dict = {'city': args['city'], 'country': args['country'], 'temperature': temp, 'time_sky': time_sky_desc}
         return res_dict, 200
 
 
