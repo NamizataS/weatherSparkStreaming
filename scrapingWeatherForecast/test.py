@@ -56,10 +56,16 @@ if __name__ == "__main__":
     list_cities_with_details = [d['key'] for d in list_dict_res2 if 'key' in d]
     print(list_cities_with_details[0])
     headers = {"Content-Type": "application/json"}
-    city = json.dumps({"city": list_cities_with_details[0][0], "country": list_cities_with_details[0][1],
-                       "timezone": list_cities_with_details[0][2]})
+    city = json.dumps({"city": list_cities_with_details[0][0], "country": list_cities_with_details[0][1]})
     req = f"http://127.0.0.1:8081/scrape_weather"
     res_req = requests.post(req, data=city, headers=headers)
     print(res_req.json())
 
+    soup = BeautifulSoup(
+        requests.get(f"https://www.google.com/search?q=weather+Marion+united states&hl=en",
+                     cookies={"CONSENT": "YES+cb.20210720-07-p0.en+FX+410"}).content,
+        "html.parser")
+    time_sky_desc = soup.find('div', attrs={'class': 'BNeawe tAd8D AP7Wnd'}).text
+    temp = soup.find('div', attrs={'class': 'vk_bk TylWce SGNhVe'}).text
+    print(temp)
 

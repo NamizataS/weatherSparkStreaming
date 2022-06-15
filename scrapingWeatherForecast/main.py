@@ -6,7 +6,7 @@ import requests
 
 if __name__ == "__main__":
     es = ElasticSearchResources()
-
+    '''
     es.delete_index("cities_index")
     mapping = {
         "properties": {
@@ -53,16 +53,21 @@ if __name__ == "__main__":
 
     res = es.query_index(query, "aggs", "cities_index")["cities_details"]["buckets"]
     list_cities = [d['key'] for d in res if 'key' in d]
+
     kafkaInteractions = KafkaInteraction()
+    print("Topic created")
     kafkaInteractions.create_topic("raw_datas")
     headers = {"Content-Type": "application/json"}
     res_tab = []
-    for i in range(22, 40):
-        city = json.dumps({"city": list_cities[i][0], "country": list_cities[i][1]})
-        req = f"http://127.0.0.1:8081/scrape_weather"
-        res_req = requests.post(req, data=city, headers=headers)
-        message = json.dumps(res_req.json()).encode("utf-8")
-        res_tab.append(message)
+    for i in range(100):
+        print(f"City is {list_cities[i][0]}")
+        try:
+            city = json.dumps({"city": list_cities[i][0], "country": list_cities[i][1]})
+            req = f"http://127.0.0.1:8081/scrape_weather"
+            res_req = requests.post(req, data=city, headers=headers)
+            message = json.dumps(res_req.json()).encode("utf-8")
+            res_tab.append(message)
+        except:
+            continue
     kafkaInteractions.send_message(res_tab, "raw_datas")
     kafkaInteractions.close_producer_connection()
-    '''

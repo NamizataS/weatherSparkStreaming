@@ -18,7 +18,7 @@ class scrapeWeather(Resource):
         parser.add_argument('country', required=True)
         args = parser.parse_args()
         soup = BeautifulSoup(
-            requests.get(f"https://www.google.com/search?q=weather+{args['city']}+{args['country']}", cookies=self.cookies).content,
+            requests.get(f"https://www.google.com/search?q=weather+{args['city']}+{args['country']}&hl=en", cookies=self.cookies).content,
             "html.parser")
         time_sky_desc = soup.find('div', attrs={'class': 'BNeawe tAd8D AP7Wnd'}).text
         temp = soup.find('div', attrs={'class': 'BNeawe iBp4i AP7Wnd'}).text
