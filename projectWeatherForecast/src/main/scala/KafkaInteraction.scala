@@ -43,9 +43,10 @@ class KafkaInteraction(){
       .drop("day", "month", "year", "day_string", "time_split")
     dfClean.printSchema()
     val avgTemperatureDF = dfClean
-      .withWatermark("timestamp", "1 hour")
+      .select("city", "country", "temperatureFormatted", "timestamp")
+      .withWatermark("timestamp", "5 minutes")
       .groupBy(col("city"), col("country"),
-                window(col("timestamp"), "12 minutes"))
+                window(col("timestamp"), "5 minutes"))
       .avg("temperatureFormatted")
 
     dfClean.writeStream
@@ -53,7 +54,7 @@ class KafkaInteraction(){
       .format("console")
       .outputMode("append")
       .start()
-
+    avgTemperatureDF.printSchema()
     avgTemperatureDF.writeStream.format("console").start().awaitTermination()
 
   }

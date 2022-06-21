@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     kafkaInteractions = KafkaInteraction()
     print("Topic created")
-    kafkaInteractions.create_topic("raw_datas")
+    #kafkaInteractions.create_topic("raw_datas")
     headers = {"Content-Type": "application/json"}
     res_tab = []
     for i in range(100):
