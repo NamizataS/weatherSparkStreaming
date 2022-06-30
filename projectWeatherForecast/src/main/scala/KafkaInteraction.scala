@@ -1,5 +1,5 @@
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.apache.spark.sql.functions.{col, concat, date_format, from_json, lit, split, window}
+import org.apache.spark.sql.functions.{col, concat, date_format, from_json, lit, split, struct, to_json, window}
 import org.apache.spark.sql.streaming.Trigger
 import org.apache.spark.sql.types.{IntegerType, StringType, StructType}
 
@@ -42,6 +42,7 @@ class KafkaInteraction(){
       .withColumn("temperatureFormatted", col("temperatureFormatted").cast(IntegerType))
       .drop("day", "month", "year", "day_string", "time_split")
     dfClean.printSchema()
+
     val avgTemperatureDF = dfClean
       .select("city", "country", "temperatureFormatted", "timestamp")
       .withWatermark("timestamp", "5 minutes")
@@ -50,13 +51,20 @@ class KafkaInteraction(){
       .avg("temperatureFormatted")
 
     dfClean.writeStream
-      .trigger(Trigger.ProcessingTime("10 minutes"))
+      .trigger(Trigger.ProcessingTime("5 minutes"))
       .format("console")
       .outputMode("append")
       .start()
     avgTemperatureDF.printSchema()
+    avgTemperatureDF.select(to_json(struct("*")).as("value"))
+      .selectExpr("CAST(value AS STRING)")
+      .writeStream
+      .format("kafka")
+      .option("kafka.bootstrap.servers", bootstrapServers)
+      .option("checkpointLocation", "./checkpoints")
+      .option("topic", "avg_weather")
+      .start()
     avgTemperatureDF.writeStream.format("console").start().awaitTermination()
-
   }
 }
 

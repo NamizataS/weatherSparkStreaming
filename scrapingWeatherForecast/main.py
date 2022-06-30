@@ -1,45 +1,14 @@
+import time
+
 from elasticsearchResources.ElasticSearchResources import ElasticSearchResources
 import pandas as pd
 from kafkaResources.KafkaResources import KafkaInteraction
 import json
 import requests
 
-if __name__ == "__main__":
+
+def main_run():
     es = ElasticSearchResources()
-    '''
-    es.delete_index("cities_index")
-    mapping = {
-        "properties": {
-            "city": {
-                "type": "text",
-                "fields": {
-                    "keyword": {
-                        "type": "keyword"
-                    }
-                }
-            },
-            "location": {
-                "type": "geo_point"
-            },
-            "country": {
-                "type": "text",
-                "fields": {
-                    "keyword": {
-                        "type": "keyword"
-                    }
-                }
-            }
-        }
-    }
-    settings = {"max_result_window": 1000000}
-    es.create_index(mapping, settings, "cities_index")
-    df_cities = pd.read_csv("worldcities.csv")
-    df_cities['location'] = df_cities.lat.astype(str).str.cat(df_cities.lng.astype(str), sep=',')
-    df_cities_es = df_cities[['city_ascii', 'location', 'country']]
-    df_cities_es = df_cities_es.rename(columns={"city_ascii": "city"})
-    documents = df_cities_es.to_dict(orient="records")
-    es.load_data_in_index(documents, "cities_index")
-    '''
     query = {
         "cities_details": {
             "multi_terms": {
@@ -55,8 +24,6 @@ if __name__ == "__main__":
     list_cities = [d['key'] for d in res if 'key' in d]
 
     kafkaInteractions = KafkaInteraction()
-    print("Topic created")
-    #kafkaInteractions.create_topic("raw_datas")
     headers = {"Content-Type": "application/json"}
     res_tab = []
     for i in range(100):
@@ -71,3 +38,14 @@ if __name__ == "__main__":
             continue
     kafkaInteractions.send_message(res_tab, "raw_datas")
     kafkaInteractions.close_producer_connection()
+
+
+if __name__ == "__main__":
+    kafkaInteractions = KafkaInteraction()
+    kafkaInteractions.create_topic("raw_datas")
+    kafkaInteractions.create_topic("avg_weather")
+    print("Topic created")
+    while True:
+        main_run()
+        time.sleep(300)
+

@@ -1,6 +1,7 @@
-from kafka import KafkaProducer
+from json import loads
+
+from kafka import KafkaProducer, KafkaConsumer
 from kafka.admin import KafkaAdminClient, NewTopic
-from pyspark.sql import SparkSession
 
 
 class KafkaInteraction:
@@ -19,6 +20,22 @@ class KafkaInteraction:
         for mes in message:
             self.producer.send(topic, mes)
         self.producer.flush(timeout=10000)
+        print("Finished sending messages to topic")
 
     def close_producer_connection(self):
         self.producer.close(timeout=5)
+
+    def get_message(self, topic):
+        consumer = KafkaConsumer(topic, bootstrap_servers=[self.bootstrap_servers], enable_auto_commit=False,
+                                 auto_offset_reset='latest', value_deserializer=lambda x: loads(x.decode('utf-8')))
+        print("Start to check topic")
+        consumer.poll()
+        for message in consumer:
+            message = message.value
+            print(message)
+        consumer.commit()
+
+
+if __name__ == "__main__":
+    kafkaInteractions = KafkaInteraction()
+    kafkaInteractions.get_message("avg_weather")

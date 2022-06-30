@@ -53,6 +53,16 @@ services:
     expose:
       - 5000
 
+  hadoopcluster:
+    image: scauglog/hdfs-hive-on-spark-local:1.0
+    container_name: hadoopcluster
+    ports:
+      - 50070:50070
+      - 4040:4040
+      - 10000:10000
+      - 5432:5432
+      - 9083:9083
+
 volumes:
   data01:
     driver: local
