@@ -1,7 +1,6 @@
 import time
 
 from elasticsearchResources.ElasticSearchResources import ElasticSearchResources
-import pandas as pd
 from kafkaResources.KafkaResources import KafkaInteraction
 import json
 import requests
