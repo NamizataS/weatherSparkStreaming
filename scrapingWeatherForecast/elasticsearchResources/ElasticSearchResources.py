@@ -28,3 +28,6 @@ class ElasticSearchResources:
                 res = self.es_client.search(index=index_name, aggs=query, size=size)
                 list_dict_res = res["aggregations"]
                 return list_dict_res
+            case "query":
+                res = self.es_client.search(index=index_name, query=query)
+                return res['hits']['hits']

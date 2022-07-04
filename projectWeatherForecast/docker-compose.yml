@@ -45,6 +45,16 @@ services:
       - 9200
       - 9300
   
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.2.2
+    container_name: kibana
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "5601:5601"
+    expose:
+      - 5601
+
   weatherapi:
     image: weatherapi_image:0.9
     container_name: weatherapi
@@ -52,16 +62,6 @@ services:
       - 8081:5000
     expose:
       - 5000
-
-  hadoopcluster:
-    image: scauglog/hdfs-hive-on-spark-local:1.0
-    container_name: hadoopcluster
-    ports:
-      - 50070:50070
-      - 4040:4040
-      - 10000:10000
-      - 5432:5432
-      - 9083:9083
 
 volumes:
   data01:

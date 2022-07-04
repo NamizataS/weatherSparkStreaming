@@ -82,7 +82,15 @@ if __name__ == "__main__":
     list_dict_res3 = res3["aggregations"]["cities_details"]["buckets"]
     list_cities_with_details = [d['key'] for d in list_dict_res3 if 'key' in d]
     print(list_cities_with_details[0])
+    city = "Jackson"
+    country = "United States"
+    query4 = {
+        "match_all": {
 
+        }
+    }
+    res4 = es_client.search(index="avg_weather", query=query4)
+    print(res4['hits']['hits'][0]['_source'])
     '''
         es.delete_index("cities_index")
         mapping = {
@@ -117,4 +125,3 @@ if __name__ == "__main__":
         documents = df_cities_es.to_dict(orient="records")
         es.load_data_in_index(documents, "cities_index")
         '''
-

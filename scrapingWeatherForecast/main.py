@@ -31,7 +31,23 @@ def main_run():
             city = json.dumps({"city": list_cities[i][0], "country": list_cities[i][1]})
             req = f"http://127.0.0.1:8081/scrape_weather"
             res_req = requests.post(req, data=city, headers=headers)
-            message = json.dumps(res_req.json()).encode("utf-8")
+            query4 = {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {"city": list_cities[i][0]}
+                        },
+                        {
+                            "match": {"country": list_cities[i][1]}
+                        }
+                    ]
+                }
+            }
+            res4 = es.query_index(query4, "query", "cities_index")[0]['_source']
+            res_req = res_req.json()
+            res_req['location'] = res4['location']
+            print(res_req)
+            message = json.dumps(res_req).encode("utf-8")
             res_tab.append(message)
         except:
             continue
