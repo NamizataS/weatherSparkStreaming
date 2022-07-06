@@ -16,6 +16,8 @@ services:
       - zookeeper-1
     ports:
       - 29092:29092
+    expose:
+      - 29092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_HOST_NAME: localhost
@@ -56,7 +58,7 @@ services:
       - 5601
 
   weatherapi:
-    image: weatherapi_image:0.9
+    image: weatherapi_image:0.10
     container_name: weatherapi
     ports:
       - 8081:5000
