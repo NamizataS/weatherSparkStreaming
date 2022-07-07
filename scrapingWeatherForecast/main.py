@@ -7,7 +7,8 @@ import json
 import requests
 
 
-def main_run(kafkaInteractions):
+def main_run():
+    kafkaInteractions = KafkaInteraction()
     es = ElasticSearchResources()
     query = {
         "cities_details": {
@@ -58,11 +59,11 @@ def main_run(kafkaInteractions):
 
 if __name__ == "__main__":
     kafkaInteractions = KafkaInteraction()
-    # kafkaInteractions.create_topic("raw_datas")
-    # kafkaInteractions.create_topic("avg_weather")
-    # kafkaInteractions.create_topic("clean_datas")
+    kafkaInteractions.create_topic("raw_datas")
+    kafkaInteractions.create_topic("avg_weather")
+    kafkaInteractions.create_topic("clean_datas")
     print("Topic created")
     while True:
-        main_run(kafkaInteractions)
+        main_run()
         time.sleep(300)
 
